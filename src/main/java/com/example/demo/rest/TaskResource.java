@@ -52,6 +52,7 @@ public class TaskResource {
 
         Task task = new Task();
         task.setTaskDetail(taskPost.getTaskDetail());
+        task.setTaskStatus(taskPost.getTaskStatus().toString());
         if (taskPost.getCreatedDate() != null && taskPost.getCreatedDate().trim().length() > 0) {
             task.setCreatedDate(Date.valueOf(taskPost.getCreatedDate()));
         } else {
@@ -77,6 +78,9 @@ public class TaskResource {
         }
         if (taskPut.getTaskDetail() != null) {
             task.get().setTaskDetail(taskPut.getTaskDetail());
+        }
+        if (taskPut.getTaskStatus() != null) {
+            task.get().setTaskStatus(taskPut.getTaskStatus().toString());
         }
         if (taskPut.getTaskGroupId() > 0) {
             task.get().setTaskGroupId(taskPut.getTaskGroupId());

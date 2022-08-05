@@ -22,6 +22,9 @@ public class Task {
     @Column(name = "task_detail")
     String taskDetail;
 
+    @Column(name = "task_status")
+    String taskStatus;
+
     @Column(name = "created_date")
     Date createdDate;
 

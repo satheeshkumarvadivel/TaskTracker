@@ -13,6 +13,7 @@ public class TaskModel {
     int id;
     int taskGroupId;
     String taskDetail;
+    TaskStatus taskStatus;
     String createdDate;
     long createdTime;
 }

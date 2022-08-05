@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>TaskTracker</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+        integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/fontawesome.min.css"
+        integrity="sha384-zIaWifL2YFF1qaDiAo0JFgsmasocJ/rqu7LKYH8CoBEXqGbb9eO+Xi3s6fQhgFWM" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="home-container">
+        <nav class="navbar">
+            <h3 style="margin-bottom: 0px;">EasyStatus</h3>
+            <div class="dropdown">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
+                  Satheeshkumar
+                </a>
+              
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" href="home.html">My Tasks</a>
+                    <a class="dropdown-item" href="manager.html">Team Tasks</a>
+                    <a class="dropdown-item" href="index.html">Logout</a>
+                </div>
+              </div>
+        </nav>
+        <div class="task-container">
+            <div class="task-card">
+                <div class="task-title">
+                    <h3>Today</h3>
+                    <button type="button" class="btn btn-light">Save</button>
+                </div>
+                <div class="task-items">
+                    <form>
+                        <div class="form-group">                            
+                            <textarea class="form-control" id="todaysTask" rows="4" placeholder="What did you work on today?"></textarea>
+                          </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="task-card">
+                <div class="task-title">
+                    <h3>Yesterday</h3>
+                    <button type="button" class="btn btn-light">Edit</button>
+                </div>
+                <div class="task-items">
+                    <ul class="list-group">
+                        <li class="list-group-item">Had sync up with team regarding GC bucket</li>
+                        <li class="list-group-item">Addressed incoming requests in Guild space</li>
+                        <li class="list-group-item">Followed up on SI deploy of CALL-57668 and tested post deploy</li>
+                        <li class="list-group-item">Followed up on AutoInfra team action items</li>
+                        <li class="list-group-item">Investigated on AUTOINFRA-10871 and had call with BIll</li>
+                        <li class="list-group-item">Reviewed Quaility wiki</li>
+                        <li class="list-group-item">Had call with team for AUTOINFRA-10581 and a call with Premaswati for the same</li>
+                        <li class="list-group-item">Followed up with Soujanya for updating information on newly created AUTOINFRA tickets</li>
+                        <li class="list-group-item">Updated AutoInfra Guild meeting recordings</li>
+                        <li class="list-group-item">Followed up on Periodic DB Backup Issue</li>
+                        <li class="list-group-item">Completed promotion request AUTOINFRA-11335</li>
+
+                    </ul>
+                </div>
+            </div>
+
+            <div class="task-card">
+                <div class="task-title">
+                    <h3>5th July</h3>
+                    <button type="button" class="btn btn-light">Edit</button>
+                </div>
+                <div class="task-items">
+                    <ul>
+                        <li>Testing selenium duplicate testcase name fix in acceptance job</li>
+                        <li>Work on US375313: Which AS - Update Resource manager Page according to new ASInfo data</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="task-card">
+                <div class="task-title">
+                    <h3>4th July</h3>
+                    <button type="button" class="btn btn-light">Edit</button>
+                </div>
+                <div class="task-items">
+                    <ul>
+                        <li>Attend CALL-69090 scrum meeting.</li>
+                        <li>Discussion with Jahirul on SMS-GW API implementation.</li>
+                        <li>Discussion with Jahirul on Settings-service API.</li>
+                        <li>Implement SmsGateway client in Admin-batch.</li>
+                        <li>Create reader and processor for new SMS Bulk job and test it in local.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="task-card">
+                <div class="task-title">
+                    <h3>1st July</h3>
+                    <button type="button" class="btn btn-light">Edit</button>
+                </div>
+                <div class="task-items">
+                    <ul>
+                        <li>Attend CALL-69090 scrum meeting.</li>
+                        <li>Discussion with Jahirul on SMS-GW API implementation.</li>
+                        <li>Discussion with Jahirul on Settings-service API.</li>
+                        <li>Implement SmsGateway client in Admin-batch.</li>
+                        <li>Create reader and processor for new SMS Bulk job and test it in local.</li>
+                    </ul>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</body>
+
+</html>

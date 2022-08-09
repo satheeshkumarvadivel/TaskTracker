@@ -3,6 +3,7 @@ package com.example.demo.filters;
 import com.example.demo.dao.UserInfoDao;
 import com.example.demo.entities.UserInfo;
 import java.io.IOException;
+import java.util.Map;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.HandlerMapping;
 
 @WebFilter("/api")
 public class ApiAuthFilter implements Filter {
@@ -40,6 +42,21 @@ public class ApiAuthFilter implements Filter {
                 if (user != null) {
                     if (user.getTokenExpiryTime() - (System.currentTimeMillis() / 1000) > 0) {
                         loginSuccess = true;
+                        request.setAttribute("user", user);
+                        Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+                        if (pathVariables.get("userId") != null) {
+                            try {
+                                if (user.getId() != (Integer) pathVariables.get("userId")) {
+                                    log.info("Unauthorized access.");
+                                    res.setContentType("application/json");
+                                    res.sendError(403, "Forbidden");
+                                }
+                            } catch (Exception e) {
+                                log.info("Error: ", e);
+                                res.setContentType("application/json");
+                                res.sendError(403, "Forbidden");
+                            }
+                        }
                         chain.doFilter(request, response);
                     } else {
                         log.info("Token expired!");

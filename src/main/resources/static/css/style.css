@@ -1,3 +1,7 @@
+:root {
+    --primary: darkslateblue;
+}
+
 * {
     font-family: Arial, Helvetica, sans-serif;
 }
@@ -80,6 +84,14 @@ body {
     border-color: rgb(47, 38, 105);
 }
 
+.btn-primary.focus,
+.btn-primary:focus {
+    color: #fff;
+    background-color: darkslateblue;
+    border-color: darkslateblue;
+    box-shadow: 0 0 0 .2rem rgba(38, 143, 255, .5)
+}
+
 #dropdownMenuLink {
     text-decoration: none;
     color: white;
@@ -138,6 +150,15 @@ body {
 
 tbody {
     font-size: 14px;
+}
+
+tbody ul li, tbody button {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.add-task {
+    background-color: #eee;
 }
 
 tbody ul li span {

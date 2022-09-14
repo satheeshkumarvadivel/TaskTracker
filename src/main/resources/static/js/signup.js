@@ -1,5 +1,5 @@
 
-class RouteA extends React.Component {
+class Singup extends React.Component {
 
     constructor(props) {
         super(props);
@@ -46,7 +46,7 @@ class RouteA extends React.Component {
     handleSubmit() {
         if (this.state.fname != "" && this.state.lname != "" && this.state.emailId != "" && this.state.managerEmailId != "" && this.state.newPassword != "" && this.state.confirmPassword != "") {
             if (this.state.newPassword == this.state.confirmPassword) {
-                var postData = {
+                var signupData = {
                     "fname": this.state.fname,
                     "lname": this.state.lname,
                     "emailId": this.state.emailId,
@@ -59,7 +59,7 @@ class RouteA extends React.Component {
                         'Content-Type': 'application/json;charset=UTF-8',
                     }
                 };
-                axios.post('/api/v1/users/signup', postData, axiosConfig)
+                axios.post('/api/v1/users/signup', signupData, axiosConfig)
                     .then((res) => {
                         if (res.status === 201) {
                             toastr.success("User created successfully...!")
@@ -130,7 +130,7 @@ class RouteA extends React.Component {
     }
 }
 const App = () => {
-    return (<RouteA />)
+    return (<Singup />)
 };
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 

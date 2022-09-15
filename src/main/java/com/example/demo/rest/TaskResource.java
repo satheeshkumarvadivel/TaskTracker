@@ -6,9 +6,12 @@ import com.example.demo.entities.Task;
 import com.example.demo.entities.UserInfo;
 import com.example.demo.model.TaskModel;
 import java.sql.Date;
+import java.time.temporal.TemporalAccessor;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Auditable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,15 +34,19 @@ public class TaskResource {
     UserInfoDao userInfoDao;
 
     @GetMapping
-    public ResponseEntity<?> getUserTasks(@PathVariable("userId") int userId, @RequestParam("groupId") Integer groupId) {
+    public ResponseEntity<?> getUserTasks(@PathVariable("userId") int userId, @RequestParam("groupId") Integer groupId,
+                                          @RequestParam("toDate") @DateTimeFormat(pattern = "yyyy-MM-dd") java.util.Date toDate,
+                                          @RequestParam("fromDate")@DateTimeFormat(pattern = "yyyy-MM-dd") java.util.Date fromDate) {
         Optional<UserInfo> user = userInfoDao.findById(userId);
         if (!user.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        if (groupId != null) {
-            return new ResponseEntity<>(user.get().getUserWithTasks(), HttpStatus.OK);
+        if (groupId == null) {
+            return new ResponseEntity<>(user.get().getUserWithTasks().getTasks().stream().filter(task -> task.getCreatedDate().after(fromDate)
+                    && task.getCreatedDate().before(toDate)).collect(Collectors.toList()), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(user.get().getUserWithTasks().getTasks().stream().filter(task -> task.getTaskGroupId() == groupId).collect(Collectors.toList()), HttpStatus.OK);
+            return new ResponseEntity<>(user.get().getUserWithTasks().getTasks().stream().filter(task -> task.getTaskGroupId() == groupId
+                    && task.getCreatedDate().after(fromDate) && task.getCreatedDate().before(toDate)).collect(Collectors.toList()), HttpStatus.OK);
         }
     }
 

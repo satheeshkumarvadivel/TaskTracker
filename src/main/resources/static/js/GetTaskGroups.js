@@ -13,8 +13,7 @@ class GetTaskGroups extends React.Component {
                       'Content-Type': 'application/json;charset=UTF-8',
                     }
                 };
-
-        axios.get('/api/v1/users/1/taskgroups')
+        axios.get('/api/v1/users/' + JSON.parse(window.localStorage.getItem('user')).id + '/taskgroups')
             .then((response) => {
                 var arr = []
                 response.data.forEach(obj => {

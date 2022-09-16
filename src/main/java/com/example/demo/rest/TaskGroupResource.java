@@ -15,14 +15,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/users/{userId}/taskgroups")
@@ -69,12 +65,14 @@ public class TaskGroupResource {
     }
 
     @GetMapping("/{taskGroupId}/users")
-    public ResponseEntity<?> getTaskGroupByIdWithUsers(@PathVariable("userId") int userId, @PathVariable("taskGroupId") int taskGroupId) {
+    public ResponseEntity<?> getTaskGroupByIdWithUsers(@PathVariable("userId") int userId, @PathVariable("taskGroupId") int taskGroupId,
+                                                       @RequestParam("toDate") @DateTimeFormat(pattern = "yyyy-MM-dd") java.util.Date toDate,
+                                                       @RequestParam("fromDate")@DateTimeFormat(pattern = "yyyy-MM-dd") java.util.Date fromDate) {
         Optional<UserInfo> user = userInfoDao.findById(userId);
         if (!user.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        List<Task> tasks = taskDao.findAllByTaskGroupId(taskGroupId);
+        List<Task> tasks = taskDao.findAllByTaskGroupIdAndCreatedDateBetween(taskGroupId, fromDate, toDate);
         Map<Integer, UserModel> users = new HashMap<>();
         tasks.forEach( task -> {
             if (!users.containsKey(task.getUserInfoId())) {
@@ -90,5 +88,4 @@ public class TaskGroupResource {
         });
         return new ResponseEntity<>(users.values(), HttpStatus.OK);
     }
-
 }

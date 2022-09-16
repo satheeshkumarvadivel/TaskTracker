@@ -50,20 +50,8 @@ public class TaskResource {
         } else {
               tasks = taskDao.findAllByUserInfoIdAndTaskGroupIdAndCreatedDateBetween(userId, groupId, fromDate, toDate);
         }
-        Map<Integer, UserModel> users = new HashMap<>();
-        tasks.forEach( task -> {
-            if (!users.containsKey(task.getUserInfoId())) {
-                UserModel userModel = user.get().getUserWithoutTasks();
-                List<Task> userTasks = new ArrayList<>();
-                userTasks.add(task);
-                userModel.setTasks(userTasks);
-                users.put(task.getUserInfoId(), userModel);
-            } else {
-                users.get(task.getUserInfoId()).getTasks().add(task);
-            }
-        });
-        return new ResponseEntity<>(users.values(), HttpStatus.OK);
-
+        user.get().setTasks(tasks);
+        return new ResponseEntity<>(user.get().getUserWithTasks(), HttpStatus.OK);
     }
 
     @PostMapping

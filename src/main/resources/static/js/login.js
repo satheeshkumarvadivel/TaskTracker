@@ -34,8 +34,7 @@ class Login extends React.Component {
         .then((res) => {
           if (res.status === 200) {
             localStorage.setItem('token', res.data.token);
-            localStorage.setItem('mail', res.data.user.emailId);
-            localStorage.setItem('id', res.data.user.id);
+            localStorage.setItem('user', JSON.stringify(res.data.user));
             location.href = "home.html"
           }
           toastr.success("Login  successfully...!")

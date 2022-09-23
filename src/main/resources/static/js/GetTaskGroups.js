@@ -11,6 +11,7 @@ class GetTaskGroups extends React.Component {
         let axiosConfig = {
                     headers: {
                       'Content-Type': 'application/json;charset=UTF-8',
+                      'Authorization': `Bearer window.localStorage.getItem('token')`
                     }
                 };
         axios.get('/api/v1/users/' + JSON.parse(window.localStorage.getItem('user')).id + '/taskgroups')

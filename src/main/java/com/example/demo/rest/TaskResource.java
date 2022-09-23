@@ -6,10 +6,12 @@ import com.example.demo.entities.Task;
 import com.example.demo.entities.UserInfo;
 import com.example.demo.model.TaskModel;
 import java.sql.Date;
+import java.sql.Time;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.example.demo.model.TaskStatus;
 import com.example.demo.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Auditable;
@@ -25,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.constraints.Null;
 
 @RestController
 @RequestMapping("/api/v1/users/{userId}/tasks")
@@ -60,16 +64,22 @@ public class TaskResource {
         if (!user.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
         Task task = new Task();
         task.setTaskDetail(taskPost.getTaskDetail());
-        task.setTaskStatus(taskPost.getTaskStatus().toString());
+        if(taskPost.getTaskStatus() == null){
+            task.setTaskStatus(TaskStatus.COMPLETED.toString());
+        }
+        else{
+            task.setTaskStatus(taskPost.getTaskStatus().toString());
+        }
+
         if (taskPost.getCreatedDate() != null && taskPost.getCreatedDate().trim().length() > 0) {
             task.setCreatedDate(Date.valueOf(taskPost.getCreatedDate()));
         } else {
-            task.setCreatedDate(new Date(System.currentTimeMillis() / 1000));
+            java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
+            task.setCreatedDate(currentDate);
         }
-        task.setCreatedTime(System.currentTimeMillis() / 1000);
+        task.setCreatedTime(System.currentTimeMillis()/1000);
         task.setUserInfoId(userId);
         task.setTaskGroupId(taskPost.getTaskGroupId());
         taskDao.save(task);
@@ -82,19 +92,28 @@ public class TaskResource {
         if (!user.isPresent()) {
             return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
-
+        boolean isUpdated = false;
         Optional<Task> task = taskDao.findById(taskPut.getId());
         if (!task.isPresent()) {
             return new ResponseEntity<>("Task not found", HttpStatus.NOT_FOUND);
         }
+        if(task.get().getUserInfoId() != userId){
+            return  new ResponseEntity<>("User not authorized to update", HttpStatus.UNAUTHORIZED);
+        }
         if (taskPut.getTaskDetail() != null) {
             task.get().setTaskDetail(taskPut.getTaskDetail());
+            isUpdated = true;
         }
         if (taskPut.getTaskStatus() != null) {
             task.get().setTaskStatus(taskPut.getTaskStatus().toString());
+            isUpdated = true;
         }
         if (taskPut.getTaskGroupId() > 0) {
             task.get().setTaskGroupId(taskPut.getTaskGroupId());
+            isUpdated = true;
+        }
+        if(isUpdated){
+            task.get().setLastUpdatedTime(System.currentTimeMillis() / 1000);
         }
         taskDao.saveAndFlush(task.get());
         return new ResponseEntity<>(task.get(), HttpStatus.OK);

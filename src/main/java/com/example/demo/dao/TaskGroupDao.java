@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TaskGroupDao extends JpaRepository<TaskGroup, Integer> {
 
+    List<TaskGroup> findAll();
+
     List<TaskGroup> findAllByGroupOwnerId(int groupOwnerId);
 
     List<TaskGroup> findAllByIdAndGroupOwnerId(int id, int groupOwnerId);

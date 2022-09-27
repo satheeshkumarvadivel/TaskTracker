@@ -47,7 +47,7 @@ public class TaskGroupResource {
     }
 
     @GetMapping
-    public ResponseEntity<?> getTaskGroups(@PathVariable("userId") int userId, @RequestParam("isOwner") Boolean isOwner) {
+    public ResponseEntity<?> getTaskGroups(@PathVariable("userId") int userId, @RequestParam(value = "isOwner", required = false) Boolean isOwner) {
         Optional<UserInfo> user = userInfoDao.findById(userId);
         if (!user.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

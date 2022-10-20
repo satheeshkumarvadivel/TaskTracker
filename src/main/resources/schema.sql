@@ -1,3 +1,4 @@
+CREATE DATABASE tasks;
 CREATE TABLE userinfo (
     id INT NOT NULL AUTO_INCREMENT,
     fname VARCHAR(50) NOT NULL,
@@ -29,6 +30,7 @@ CREATE TABLE task (
     task_detail VARCHAR(250),
     userinfo_id INT,
     taskgroup_id INT,
+    task_status VARCHAR(15),
     created_date DATE,
     created_time VARCHAR(10),
     last_updated_time VARCHAR(10),

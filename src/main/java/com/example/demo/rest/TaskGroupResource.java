@@ -47,12 +47,16 @@ public class TaskGroupResource {
     }
 
     @GetMapping
-    public ResponseEntity<?> getTaskGroupByOwner(@PathVariable("userId") int groupOwnerId) {
-        Optional<UserInfo> user = userInfoDao.findById(groupOwnerId);
+    public ResponseEntity<?> getTaskGroups(@PathVariable("userId") int userId, @RequestParam(value = "isOwner", required = false) Boolean isOwner) {
+        Optional<UserInfo> user = userInfoDao.findById(userId);
         if (!user.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(taskGroupDao.findAllByGroupOwnerId(groupOwnerId), HttpStatus.OK);
+        if (isOwner != null && isOwner.booleanValue()) {
+            return new ResponseEntity<>(taskGroupDao.findAllByGroupOwnerId(userId), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(taskGroupDao.findAll(), HttpStatus.OK);
+        }
     }
 
     @GetMapping("/{taskGroupId}")

@@ -8,41 +8,22 @@
     <title>TaskTracker</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js" integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-box">
-            <div class="login-left-box">
-                <img src="images/checklist.webp" class="login-logo" alt="checklist" />
-                <h2> Login</h2>
-                <form>
-                    <div class="form-group">
-                      <label for="emailId">Email</label>
-                      <input type="email" class="form-control" id="emailId">
-                    </div>
-                    <div class="form-group">
-                      <label for="password">Password</label>
-                      <input type="password" class="form-control" id="password">
-                    </div>
-                    <button type="button" class="btn btn-primary" onclick="signin()">Login</button>
-                  </form> <br />
-                  <p> Don't have an account? <a href="signup.html">Sign Up</a></p>
-            </div>
-            <div class="login-right-box">
-                <img src="images/cisco-logo.png" height="110px" width="175px" alt="cisco-logo" /> <br />
-                <h1>EasyStatus</h1> <br />
-                <p>Welcome to EasyStatus, a daily status tracker application to track the daily status of your reportees. 
-                    You can SignUp with the application and add your team members to track their daily status. </p>
-            </div>
-        </div>
-    </div>
-    <script>
-        function signin() {
-            window.location.href = 'home.html';
-        }
-    </script>
+    <div id="root"></div>
+    <script src="./js/login.js"  type="text/babel"></script>
+
 </body>
 </html>

@@ -18,6 +18,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
         crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="./js/GetTaskGroups.js" type="text/babel"></script>
+    <script src="./js/PostTaskGroups.js" type="text/babel"></script>
 </head>
 
 <body>
@@ -42,15 +48,8 @@
                 <form class="col-8">
                     <div class="form-row justify-content-between">
                         <button type="button" class="btn btn-primary col-1"> &lt;&lt; </button>
-                        <div class="col col-3">
-                            <select id="inputState" class="form-control">
-                                <option selected>Team Status</option>
-                                <option>BEMS</option>
-                                <option>PST</option>
-                                <option>CALL-33101</option>
-                                <option>CALL-69090</option>
-                            </select>
-                        </div>
+                        <div id="root" className="col col-3"></div>
+                        <div id="creategroup"></div>
                         <div class="col col-lg-5">
                             <input type="text" class="form-control" placeholder="Search">
                         </div>
@@ -95,7 +94,7 @@
                                     on PROVISION-9958<span
                                         class="badge badge-secondary badge-pill">CALL-33101</span>
                                 </button>
-                                <button type="button" draggable="true" data-toggle="modal" data-target="#addTaskModal"
+                                <button type="button" onclick="viewTask()" data-toggle="modal" data-target="#addTaskModal"
                                     class="list-group-item list-group-item-action d-flex justify-content-between align-items-center add-task">
                                     + Add Task</span>
                                 </button>
@@ -173,6 +172,10 @@
                                     class=" list-group-item list-group-item-action d-flex justify-content-between align-items-center success-border">
                                     Discussion with Jahirul on SMS-GW API implementation.<span
                                         class="badge badge-secondary badge-pill">BEMS</span></li>
+                                <li type="button" draggable="true" data-toggle="modal" data-target="#addTaskModal"
+                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center add-task">
+                                    + Add Task</span>
+                                </li>
                             </ul>
                         </td>
                     </tr>
@@ -560,7 +563,7 @@
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-primary" onclick="addTask()">Add</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         </div>
                     </div>

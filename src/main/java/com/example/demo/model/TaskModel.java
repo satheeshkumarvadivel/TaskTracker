@@ -8,7 +8,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Builder
 public class TaskModel {
     int id;
     int taskGroupId;
@@ -16,4 +15,7 @@ public class TaskModel {
     TaskStatus taskStatus;
     String createdDate;
     long createdTime;
+
+    public TaskModel() {
+    }
 }

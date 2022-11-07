@@ -6,16 +6,13 @@ import com.example.demo.entities.Task;
 import com.example.demo.entities.UserInfo;
 import com.example.demo.model.TaskModel;
 import java.sql.Date;
-import java.sql.Time;
-import java.time.temporal.TemporalAccessor;
+import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import com.example.demo.model.TaskStatus;
-import com.example.demo.model.UserModel;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Auditable;
-import org.springframework.data.jpa.domain.Specification;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.constraints.Null;
 
 @RestController
 @RequestMapping("/api/v1/users/{userId}/tasks")
@@ -76,8 +71,7 @@ public class TaskResource {
         if (taskPost.getCreatedDate() != null && taskPost.getCreatedDate().trim().length() > 0) {
             task.setCreatedDate(Date.valueOf(taskPost.getCreatedDate()));
         } else {
-            java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
-            task.setCreatedDate(currentDate);
+            task.setCreatedDate(Date.valueOf(LocalDate.now()));
         }
         task.setCreatedTime(System.currentTimeMillis()/1000);
         task.setUserInfoId(userId);

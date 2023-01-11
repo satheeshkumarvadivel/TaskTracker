@@ -30,4 +30,4 @@ class GetTaskGroups extends React.Component {
     }
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<GetTaskGroups />);
+ReactDOM.createRoot(document.getElementById("taskgrouplist")).render(<GetTaskGroups />);

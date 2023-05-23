@@ -1,3 +1,12 @@
+import React from 'react';
+import axios from 'axios';
+import ReactDOM from 'react-dom/client';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.min.js";
+import SignUp from './SignUp';
+import Dashboard from './Dashboard';
+import { Link, Navigate, BrowserRouter as Router } from 'react-router-dom';
+
 class Login extends React.Component {
     constructor(props) {
       super(props);
@@ -7,7 +16,8 @@ class Login extends React.Component {
   
       this.state = {
         email: '',
-        pass: ''
+        pass: '',
+        toDashboard: false
       }
     }
   
@@ -17,6 +27,10 @@ class Login extends React.Component {
     password(event) {
       this.setState({ pass: event.target.value })
     };
+
+    componentDidMount() {
+
+    }
   
   handleSubmit(event){
     if (this.state.email != "" && this.state.pass != "") {
@@ -35,23 +49,26 @@ class Login extends React.Component {
           if (res.status === 200) {
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('user', JSON.stringify(res.data.user));
-            location.href = "home.html"
+            this.setState({ toDashboard: true })
           }
-          toastr.success("Login  successfully...!")
-  
+          console.log("Login  successfully...!")
+
         })
         .catch((err) => {
-          toastr.error(err.response.data.error);
+          console.log(err.response.data.error);
         })
     } else {
-      toastr.warning("All Fields are Mandatory!");
+      console.log("All Fields are Mandatory!");
     }
   }
-  
-  
-  
-  
+
   render(){
+  console.log("Login  successfully...!!!")
+    if (this.state.toDashboard) {
+        console.log("Logging in...")
+        return <Navigate to='/dashboard'/>
+//        this.props.history.push('/dashboard')
+    }
     return <div>
       <div className="login-container">
         <div className="login-box">
@@ -68,7 +85,7 @@ class Login extends React.Component {
             </div>
             <button type="button" className="btn btn-primary" onClick={this.handleSubmit}  >Login</button>
             <br />
-            <p> Don't have an account? <a href="signup.html">Sign Up</a></p>
+            <Link to='/signup'><p> Don't have an account?</p></Link>
           </div>
           <div className="login-right-box">
             <img src="images/cisco-logo.png" height="110px" width="175px" alt="cisco-logo" /> <br />
@@ -80,16 +97,6 @@ class Login extends React.Component {
       </div>
     </div>;
   }
-  }
-  
-  
-  const App = () => {
-    return (
-      <div>
-        <Login />
-      </div>
-    )
-  
-  };
-  
-  ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+}
+
+export default Login;

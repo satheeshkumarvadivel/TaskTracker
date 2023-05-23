@@ -1,3 +1,6 @@
+import React from 'react';
+import axios from 'axios';
+
 class GetTaskGroups extends React.Component {
     constructor(props) {
         super(props);
@@ -30,4 +33,4 @@ class GetTaskGroups extends React.Component {
     }
 }
 
-ReactDOM.createRoot(document.getElementById("taskgrouplist")).render(<GetTaskGroups />);
+export default GetTaskGroups;

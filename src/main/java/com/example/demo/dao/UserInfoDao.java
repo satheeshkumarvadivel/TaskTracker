@@ -17,6 +17,6 @@ public interface UserInfoDao extends JpaRepository<UserInfo, Integer> {
 
     public UserInfo findByToken(String token);
 
-    @Query(value = "select fname, lname, manager_emailid,emailid, is_Active, is_manager, userinfo.id AS uid, task_detail, task.id AS tid, created_date, task_status, task.created_time, taskgroup_id from userinfo JOIN task on userinfo.id = task.userinfo_id where manager_emailid =:managerid and task.created_date BETWEEN :fromDate AND :toDate or created_date=NULL", nativeQuery = true)
+    @Query(value = "select fname, lname, manager_emailid, emailid, is_Active, is_manager, userinfo.id AS uid, task_detail, tid, created_date, task_status, tasktable.created_time, taskgroup_id, group_name from userinfo JOIN (SELECT task.id AS tid, task_detail, created_time, userinfo_id, task_status, created_date, taskgroup_id, group_name FROM task JOIN taskgroup on taskgroup.id = task.taskgroup_id) AS tasktable on userinfo.id = tasktable.userinfo_id where manager_emailid = :managerid and tasktable.created_date BETWEEN :fromDate AND :toDate or created_date=NULL", nativeQuery = true)
     public List<Map<String, Object>> getUserInfoByManagerEmailId(String managerid, Date fromDate, Date toDate);
 }

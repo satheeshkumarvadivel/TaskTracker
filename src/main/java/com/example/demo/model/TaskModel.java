@@ -11,6 +11,7 @@ import lombok.ToString;
 public class TaskModel {
     int id;
     int taskGroupId;
+    String taskGroup;
     String taskDetail;
     TaskStatus taskStatus;
     String createdDate;

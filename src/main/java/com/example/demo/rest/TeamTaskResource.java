@@ -44,6 +44,7 @@ public class TeamTaskResource {
             task.setTaskStatus(TaskStatus.valueOf((String) userWithManagerId.get("task_status")));
             task.setId((Integer) userWithManagerId.get("tid"));
             task.setTaskGroupId((Integer) userWithManagerId.get("taskgroup_id"));
+            task.setTaskGroup((String) userWithManagerId.get("group_name"));
             task.setCreatedTime(Long.parseLong((String) userWithManagerId.get("created_time")));
 
             if (!users.containsKey(userWithManagerId.get("uid").toString())) {

@@ -97,15 +97,6 @@ class Dashboard extends React.Component {
         return (this.state.week_start_date != nextState.week_start_date) && (this.state.week_end_date != nextState.week_end_date);
     }
 
-//    async componentDidUpdate() {
-//        console.log("Inside componentDidupdate")
-//        this.setState({
-//            dateArray: this.getDateArray(this.state.week_start_date, this.state.week_end_date),
-//            userData: await this.getUserData(this.state.week_start_date, this.state.week_end_date),
-//            taskData: await this.getTaskData(this.state.week_start_date, this.state.week_end_date)
-//        })
-//    }
-
     getUserData = async (week_monday, week_friday) => {
         const userData = {};
 

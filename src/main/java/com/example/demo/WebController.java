@@ -13,25 +13,4 @@ public class WebController {
     public String redirect() {
         return "forward:/";
     }
-
-//    @GetMapping("/")
-//    public String getIndex() {
-//        return "/src/index.html";
-//    }
-//
-//    @GetMapping("/home")
-//    public String getHome() {
-//        return "/src/home.html";
-//    }
-//
-//    @GetMapping("/team")
-//    public String getTeam() {
-//        return "/src/manager.html";
-//    }
-//
-//    @GetMapping("/signup")
-//    public String getSignup() {
-//        return "/src/signup.html";
-//    }
-
 }

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.dao.UserInfoDao;
+
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -24,7 +25,7 @@ public class TeamTaskResource {
     @GetMapping
     public ResponseEntity<?> getTasksWithManagerId(@PathVariable("userId") int userId,
                                                    @RequestParam("toDate") @DateTimeFormat(pattern = "yyyy-MM-dd") java.util.Date tDate,
-                                                   @RequestParam("fromDate")@DateTimeFormat(pattern = "yyyy-MM-dd") java.util.Date fDate) {
+                                                   @RequestParam("fromDate") @DateTimeFormat(pattern = "yyyy-MM-dd") java.util.Date fDate) {
         Optional<UserInfo> user = userInfoDao.findById(userId);
         if (!user.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -34,7 +35,7 @@ public class TeamTaskResource {
         String managerEmailId = user.get().getManagerEmailId();
         List<Map<String, Object>> usersDataWithManagerId = userInfoDao.getUserInfoByManagerEmailId(managerEmailId, fromDate, toDate);
 
-        Map<String, UserModelDTO> users=new HashMap<>();
+        Map<String, UserModelDTO> users = new HashMap<>();
         for (Map<String, Object> userWithManagerId : usersDataWithManagerId) {
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");

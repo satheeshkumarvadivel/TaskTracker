@@ -68,7 +68,7 @@ public class TaskResource {
             task.setTaskStatus(taskPost.getTaskStatus().toString());
         }
 
-        if (taskPost.getCreatedDate() != null && taskPost.getCreatedDate().trim().length() > 0) {
+        if (taskPost.getCreatedDate() != null) {
             task.setCreatedDate(Date.valueOf(taskPost.getCreatedDate()));
         } else {
             task.setCreatedDate(Date.valueOf(LocalDate.now()));

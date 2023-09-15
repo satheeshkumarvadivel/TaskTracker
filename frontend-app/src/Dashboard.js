@@ -8,7 +8,7 @@ import PostTaskGroups from './PostTaskGroups';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap/js/dist/modal.js';
-
+import  LogoutDropdown from './LogoutDropdown';
 class Dashboard extends React.Component {
 
     constructor(props) {
@@ -18,7 +18,15 @@ class Dashboard extends React.Component {
         this.nextweek = this.nextweek.bind(this);
         this.getUserData = this.getUserData.bind(this);
         this.getTaskData = this.getTaskData.bind(this);
-
+        this.handleDropdownChange = this.handleDropdownChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleDropdownChangeTaskStatus = this.handleDropdownChangeTaskStatus.bind(this);
+        this.handletaskDetail = this.handletaskDetail.bind(this);
+        this.doSomething = this.doSomething.bind(this);
+        this.toggleShow = this.toggleShow.bind(this);
+        this.hide = this.hide.bind(this);
+        this.toggleOpen = this.toggleOpen.bind(this);
+        this.handleDropdowndate = this.handleDropdowndate.bind(this);
         this.state = {
             prvcount: 0,
             specificUserId: JSON.parse(localStorage.getItem("user")).id,
@@ -29,7 +37,13 @@ class Dashboard extends React.Component {
             managerdetails:[],
             taskData: {},
             userData: {},
-            dateArray: []
+            dateArray: [],
+            TaskselectValue:"",
+            TaskGroupSelectValue:"",
+            TaskDetail:"",
+            isOpen: false,
+            show: false,
+            Date:''
         }
 
         Date.prototype.toShortFormat = function() {
@@ -44,7 +58,40 @@ class Dashboard extends React.Component {
             date.setDate(date.getDate() + days);
             return date;
         }
+
+
     }
+
+    doSomething(e){
+        e.preventDefault();
+        console.log(e.target.innerHTML);
+      }
+
+      toggleShow(){
+        this.setState({show: !this.state.show});
+      }
+
+      hide(e){
+        if(e && e.relatedTarget){
+          e.relatedTarget.click();
+        }
+        this.setState({show: false});
+      }
+
+    handleDropdownChange(e) {
+        this.setState({ TaskGroupSelectValue: e.target.value });
+      }
+     handleDropdowndate(e){
+        this.setState({ Date: e.target.value });
+     }
+
+     handleDropdownChangeTaskStatus(e){
+     this.setState({TaskselectValue:e.target.value});
+     }
+
+     handletaskDetail(e){
+     this.setState({TaskDetail:e.target.value});
+     }
 
     async componentWillMount() {
         const dates=[]
@@ -244,6 +291,61 @@ class Dashboard extends React.Component {
         }
     }
 
+
+    toggleOpen (){
+     this.setState({ isOpen: !this.state.isOpen });
+     console.log(this.state.isOpen)
+    }
+
+    handleSubmit(){
+      var selectTaskvalue=this.state.TaskGroupSelectValue
+      var res = this.state.groups.filter(function(item) {
+            if(item.label == selectTaskvalue){
+            return item.value
+            }
+        });
+       console.log(res)
+       if(this.state.TaskDetail  && this.state.TaskDetail && this.state.Date  && this.state.TaskselectValue && res[0].value ){
+       let axiosConfig = {
+           headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                'Authorization': `Bearer window.localStorage.getItem('token')`
+                 }
+            };
+            axios.post('/api/v1/users/' + JSON.parse(window.localStorage.getItem('user')).id + '/tasks',
+                   {"taskGroupId": res[0].value,
+                   "taskDetail":this.state.TaskDetail,
+                   "taskStatus":this.state.TaskselectValue,
+                   "createdDate": this.state.Date
+                   },axiosConfig)
+                       .then((response) => {
+                           console.log(response)
+                           alert("Task successfully Instered...!")
+                       }
+                   );
+         }else{
+            alert("Please enter the value for all fields..!")
+         }
+    }
+
+    componentDidMount(){
+    let axiosConfig = {
+                        headers: {
+                          'Content-Type': 'application/json;charset=UTF-8',
+                          'Authorization': `Bearer window.localStorage.getItem('token')`
+                        }
+                    };
+            axios.get('/api/v1/users/' + JSON.parse(window.localStorage.getItem('user')).id + '/taskgroups')
+                .then((response) => {
+                    var arr = []
+                    response.data.forEach(obj => {
+                        arr.push({value: obj.id, label: obj.groupName});
+                    });
+                    this.setState({ groups: arr });
+                }
+            );
+    }
+
     render(){
         console.log("***************")
         console.log(this.state.dateArray);
@@ -251,28 +353,15 @@ class Dashboard extends React.Component {
         console.log(this.state.taskData);
         console.log("start = " + this.state.week_start_date);
         console.log("end = " + this.state.week_end_date);
-
+        console.log(this.state.show)
+        const menuClass = `dropdown-menu${this.state.isOpen ? " show" : ""}`;
+        console.log(menuClass)
         return <div>
             <div className="home-container">
                 <nav className="navbar">
                     <h3 >EasyStatus</h3>
+                    <LogoutDropdown/>
 
-                    <div className="dropdown">
-                          <a
-                            className="dropdown-toggle"
-                            href="#"
-                            role="button"
-                            id="dropdownMenuLink"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                          >
-                            {JSON.parse(localStorage.getItem("user")).fname}
-                          </a>
-
-                          <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <a className="dropdown-item" href="index.html">Logout</a>
-                          </div>
-                        </div>
                 </nav>
                 <div className="task-table-container">
                     <div className="task-table-control-bar">
@@ -320,9 +409,53 @@ class Dashboard extends React.Component {
                                                 )}
 
                                                 {/* Add Task option for current user alone */}
-                                                <li type="button" draggable="true" data-toggle="modal" data-target="#addTaskModal" className="list-group-item list-group-item-action d-flex justify-content-between align-items-center add-task">
+                                                <li type="button" draggable="true" data-toggle="modal" data-bs-toggle="modal" data-bs-target="#exampleModal" className="list-group-item list-group-item-action d-flex justify-content-between align-items-center add-task">
                                                     + Add Task
                                                 </li>
+                                                 <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog">
+                                                            <div className="modal-dialog" role="document">
+                                                              <div className="modal-content">
+                                                                <div className="modal-header">
+                                                                  <h5 className="modal-title">Create Task Group</h5>
+                                                                  <button type="button" className="close" data-bs-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                  </button>
+                                                                </div>
+                                                                <div className="modal-body">
+                                                                  <div className="form-group">
+                                                                    <label htmlFor="groupname">Task Group</label>
+                                                                    <select id="inputState" className="form-control" onChange={this.handleDropdownChange}  defaultValue="2"> <option defaultValue value="Select">Select</option> {this.state.groups.map(item => <option key={item.value} >{item.label}</option>)}</select>
+                                                                  </div>
+                                                                  <div className="form-group">
+                                                                      <label htmlFor="taskDetail">TaskDetail</label>
+                                                                      <input type="text" className="form-control" onChange={this.handletaskDetail}  id="taskDetail"/>
+                                                                    </div>
+                                                                    <div className="form-group">
+                                                                        <label htmlFor="taskStatus">Task Status</label>
+                                                                         <select id="TaskStatus" onChange={this.handleDropdownChangeTaskStatus} className="form-control">
+                                                                           <option defaultValue value="Select">Select</option>
+                                                                           <option  value="INPROGRESS">INPROGRESS</option>
+                                                                           <option value="COMPLETED">COMPLETED</option>
+                                                                           <option value="BLOCKED">BLOCKED</option>
+                                                                           </select>
+                                                                    </div>
+
+                                                                    <div className="form-group">
+                                                                     <label htmlFor="taskStatus">Date</label>
+                                                                     <select id="TaskStatus" onChange={this.handleDropdowndate} className="form-control">
+                                                                     <option defaultValue value="Select">Select</option>
+                                                                    {this.state.dateArray.map(item => <option  key={item} >{item}</option>)}
+                                                                    </select>
+                                                                  </div>
+
+                                                                </div>
+                                                                <div className="modal-footer">
+                                                                  <button type="button" className="btn btn-primary" onClick={this.handleSubmit}>Create</button>
+                                                                  <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                          </div>
                                             </ul>
                                         </td>
                                     )}

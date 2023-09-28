@@ -43,8 +43,11 @@ class Dashboard extends React.Component {
             TaskDetail:"",
             isOpen: false,
             show: false,
-            Date:''
+            Date:'',
+            isModalOpen:false
         }
+        this.clickCount = 0;
+        this.singleClickTimer = '';
 
         Date.prototype.toShortFormat = function() {
             let day = this.getDate();
@@ -176,7 +179,7 @@ class Dashboard extends React.Component {
         };
 
         try {
-            const res = await axios.get('/api/v1/users/1/teamtasks?toDate='+new Date(week_friday).toShortFormat()+'&fromDate='+ new Date(week_monday).toShortFormat(), axiosConfig)
+            const res = await axios.get('/api/v1/users/' + JSON.parse(window.localStorage.getItem('user')).id + '/teamtasks?toDate=' + new Date(week_friday).toShortFormat() + '&fromDate=' + new Date(week_monday).toShortFormat(), axiosConfig)
             console.log(res.data)
 
             for (let i = 0; i < Object.keys(res.data).length; i++) {
@@ -194,7 +197,8 @@ class Dashboard extends React.Component {
                     taskData[dom_id].push({
                         taskDetail: task.taskDetail,
                         taskGroup: task.taskGroup,
-                        userId: task.userId
+                        userId: task.userId,
+                        taskStatus: task.taskStatus
                     });
                 }
             }
@@ -319,6 +323,108 @@ class Dashboard extends React.Component {
          }
     }
 
+    handleEditSubmit(){
+        alert("in method");
+        var selectTaskvalue=this.state.TaskGroupSelectValue
+        var res = this.state.groups.filter(function(item) {
+            if(item.label == selectTaskvalue){
+                return item.value
+            }
+        });
+        console.log(res)
+        if(this.state.TaskDetail  && this.state.TaskDetail && this.state.Date  && this.state.TaskselectValue && res[0].value ){
+            let axiosConfig = {
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    'Authorization': `Bearer window.localStorage.getItem('token')`
+                }
+            };
+            axios.put('/api/v1/users/' + JSON.parse(window.localStorage.getItem('user')).id + '/tasks',
+                {"taskGroupId": res[0].value,
+                    "taskDetail":this.state.TaskDetail,
+                    "taskStatus":this.state.TaskselectValue,
+                    "createdDate": this.state.Date
+                },axiosConfig)
+                .then((response) => {
+                        console.log(response)
+                        alert("Task successfully Updated...!")
+                    }
+                );
+        }else{
+            alert("Please enter the value for all fields..!")
+        }
+    }
+
+    setColor = (taskStatus) => {
+        if(taskStatus === 'COMPLETED')
+            return 'success-border'
+        if(taskStatus === 'INPROGRESS')
+            return 'primary-border'
+        return 'danger-border'
+
+    }
+
+    handleDoubleClick = (taskStatus) => {
+        let newTaskStatus = ""
+        if(taskStatus === 'COMPLETED')
+             newTaskStatus = 'BLOCKED'
+        else if(taskStatus === 'INPROGRESS')
+            newTaskStatus =  'COMPLETED'
+        else newTaskStatus =  'INPROGRESS'
+
+        alert("in method");
+        var selectTaskvalue=this.state.TaskGroupSelectValue
+        var res = this.state.groups.filter(function(item) {
+            if(item.label == selectTaskvalue){
+                return item.value
+            }
+        });
+        console.log(res)
+        if(this.state.TaskDetail  && this.state.TaskDetail && this.state.Date  && this.state.TaskselectValue && res[0].value ){
+            let axiosConfig = {
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    'Authorization': `Bearer window.localStorage.getItem('token')`
+                }
+            };
+            axios.put('/api/v1/users/' + JSON.parse(window.localStorage.getItem('user')).id + '/tasks',
+                {"taskGroupId": res[0].value,
+                    "taskDetail":this.state.TaskDetail,
+                    "taskStatus": newTaskStatus,
+                    "createdDate": this.state.Date
+                },axiosConfig)
+                .then((response) => {
+                        console.log(response)
+                        alert("Task successfully Updated...!")
+                    }
+                );
+        }else{
+            alert("Please enter the value for all fields..!")
+        }
+    }
+
+    singleClick = () => {
+        alert('only fire click')
+        this.setState({isModalOpen:true});
+    }
+    handleDoubleClick = () => {
+        alert('only fire double click')
+    }
+    handleClicks(){
+        this.clickCount++;
+        if (this.clickCount === 1) {
+            this.singleClickTimer = setTimeout(function() {
+                this.clickCount = 0;
+                this.singleClick();
+            }.bind(this), 300);
+
+        } else if (this.clickCount === 2) {
+            clearTimeout(this.singleClickTimer);
+            this.clickCount = 0;
+            this.handleDoubleClick();
+        }
+    }
+
     componentDidMount(){
     let axiosConfig = {
                         headers: {
@@ -393,17 +499,84 @@ class Dashboard extends React.Component {
                                         <td className="align-middle" key={`${day}-${this.state.specificUserId}`}>
                                             <ul className="list-group task-cell">
                                                 {this.state.taskData[`${day}-${this.state.specificUserId}`] && this.state.taskData[`${day}-${this.state.specificUserId}`].map((task, index) =>
-                                                    <li className="list-group-item list-group-item-action d-flex justify-content-between align-items-center primary-border">
+                                                    <li type="button" draggable="true" data-toggle="modal" data-bs-toggle="modal" data-bs-target="#editModal" className={"list-group-item list-group-item-action d-flex justify-content-between align-items-center " + (this.setColor(task.taskStatus))} onClick={()=>this.handleClicks()}>
                                                         {task.taskDetail}
                                                         <span className="badge badge-secondary badge-pill">{task.taskGroup}</span>
                                                     </li>
                                                 )}
+                                                <div className="modal fade"   id="editModal" tabIndex="-1" role="dialog">
+                                                        <div className="modal-dialog" role="document">
+                                                            <div className="modal-content">
+                                                                <div className="modal-header">
+                                                                    <h5 className="modal-title">Edit Task</h5>
+                                                                    <button type="button" className="close"
+                                                                            data-bs-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div className="modal-body">
+                                                                    <div className="form-group">
+                                                                        <label htmlFor="groupname">Task Group</label>
+                                                                        <select id="inputState" className="form-control"
+                                                                                onChange={this.handleDropdownChange}
+                                                                                value={this.state.TaskGroupSelectValue}>
+                                                                            <option defaultValue value="Select">Select
+                                                                            </option>
+                                                                            {this.state.groups?.map(item => <option
+                                                                                key={item.value}>{item.label}</option>)}
+                                                                        </select>
+                                                                    </div>
+                                                                    <div className="form-group">
+                                                                        <label htmlFor="taskDetail">TaskDetail</label>
+                                                                        <input type="text" className="form-control"
+                                                                               onChange={this.handletaskDetail}
+                                                                               id="taskDetail"/>
+                                                                    </div>
+                                                                    <div className="form-group">
+                                                                        <label htmlFor="taskStatus">Task Status</label>
+                                                                        <select id="TaskStatus"
+                                                                                onChange={this.handleDropdownChangeTaskStatus}
+                                                                                className="form-control"
+                                                                                value={this.state.TaskselectValue}>
+                                                                            <option value="Select">Select</option>
+                                                                            <option value="INPROGRESS">INPROGRESS
+                                                                            </option>
+                                                                            <option value="COMPLETED">COMPLETED</option>
+                                                                            <option value="BLOCKED">BLOCKED</option>
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <div className="form-group">
+                                                                        <label htmlFor="taskStatus">Date</label>
+                                                                        <select id="TaskStatus"
+                                                                                onChange={this.handleDropdowndate}
+                                                                                className="form-control">
+                                                                            <option defaultValue value="Select">Select
+                                                                            </option>
+                                                                            {this.state.dateArray.map(item => <option
+                                                                                key={item}>{item}</option>)}
+                                                                        </select>
+                                                                    </div>
+
+                                                                </div>
+                                                                <div className="modal-footer">
+                                                                    <button type="button" className="btn btn-primary"
+                                                                            onClick={this.handleEditSubmit}>Edit
+                                                                    </button>
+                                                                    <button type="button" className="btn btn-secondary"
+                                                                            data-bs-dismiss="modal">Close
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
 
                                                 {/* Add Task option for current user alone */}
-                                                <li type="button" draggable="true" data-toggle="modal" data-bs-toggle="modal" data-bs-target="#exampleModal" className="list-group-item list-group-item-action d-flex justify-content-between align-items-center add-task">
+                                                <li type="button" draggable="true" data-toggle="modal" data-bs-toggle="modal" data-bs-target="#addTaskModal" className="list-group-item list-group-item-action d-flex justify-content-between align-items-center add-task">
                                                     + Add Task
                                                 </li>
-                                                 <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog">
+                                                 <div className="modal fade" id="addTaskModal" tabIndex="-1" role="dialog">
                                                             <div className="modal-dialog" role="document">
                                                               <div className="modal-content">
                                                                 <div className="modal-header">
@@ -415,7 +588,7 @@ class Dashboard extends React.Component {
                                                                 <div className="modal-body">
                                                                   <div className="form-group">
                                                                     <label htmlFor="groupname">Task Group</label>
-                                                                    <select id="inputState" className="form-control" onChange={this.handleDropdownChange}  defaultValue="2"> <option defaultValue value="Select">Select</option> {this.state.groups.map(item => <option key={item.value} >{item.label}</option>)}</select>
+                                                                    <select id="inputState" className="form-control" onChange={this.handleDropdownChange}  defaultValue="2"> <option defaultValue value="Select">Select</option> {this.state.groups?.map(item => <option key={item.value} >{item.label}</option>)}</select>
                                                                   </div>
                                                                   <div className="form-group">
                                                                       <label htmlFor="taskDetail">TaskDetail</label>
@@ -459,8 +632,10 @@ class Dashboard extends React.Component {
                                         {this.state.dateArray.map(day =>
                                             <td className="align-middle" key={`${day}-${userid}`}>
                                                 <ul className="list-group task-cell">
+
                                                     {this.state.taskData[`${day}-${userid}`] && this.state.taskData[`${day}-${userid}`].map((task, index) =>
-                                                        <li className="list-group-item list-group-item-action d-flex justify-content-between align-items-center primary-border">
+                                                        <li className={"list-group-item list-group-item-action d-flex justify-content-between align-items-center " + (this.setColor(task.taskStatus))
+                                                        }>
                                                             {task.taskDetail}
                                                             <span className="badge badge-secondary badge-pill">{task.taskGroup}</span>
                                                         </li>)
@@ -473,7 +648,6 @@ class Dashboard extends React.Component {
                             </>
                         </tbody>
                     </table>
-
                     <div className="modal fade" tabIndex="-1" role="dialog" id="addTaskModal">
                         <div className="modal-dialog  modal-dialog-centered" role="document">
                             <div className="modal-content">

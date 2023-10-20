@@ -1,0 +1,36 @@
+version: '3.0'
+
+networks:
+  default:
+  orange_network:
+    external: true
+
+
+services:
+  app:
+    image: easystatus:latest
+    container_name: easystatus
+    networks:
+      - orange_network
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      MYSQL_HOST: mysqldb
+      MYSQL_PASSWORD: 1234
+      MYSQL_PORT: 3306
+
+  db:
+    image: mysql:8.0.22
+    container_name: mysql
+    volumes:
+      - /Users/saibogga/Documents/TaskTracker/DB/:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tasks
+    ports:
+      - "3306:3306"
+
+    networks:
+      - orange_network
